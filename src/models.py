@@ -19,6 +19,10 @@ class User(Base):
     lastname = Column(String(250), nullable=False)
     email = Column(String(250), nullable=False)
 
+    post_id = relationship('Post', backref='user', lazy=True)
+    comment_id = relationship('Comment', backref='user', lazy=True)
+    follower_from_id = relationship('Follower', backref='user', lazy=True)
+    follower_to_id = relationship('Follower', backref='user', lazy=True)
 
 class Post(Base):
     __tablename__ = 'post'
@@ -27,6 +31,9 @@ class Post(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer,ForeignKey('user.id'))
     
+    post_id = relationship('Comment', backref='post', lazy=True)
+    media_id = relationship('Media', backref='post', lazy=True)
+
 class Comment(Base):
     __tablename__ = 'comment'
     # Here we define columns for the table address.
@@ -35,6 +42,9 @@ class Comment(Base):
     comment_text = Column(String(250), nullable=False)
     post_id = Column(Integer,ForeignKey('post.id'))
     user_id = Column(Integer,ForeignKey('user.id'))
+    
+    
+    
 
 class Media(Base):
     __tablename__ = 'media'
@@ -45,12 +55,14 @@ class Media(Base):
     url = Column(String(100), nullable=False)
     post_id = Column(Integer,ForeignKey('post.id'))
 
+
 class Follower(Base):
     __tablename__ = 'follower'
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
     user_from_id = Column(Integer,ForeignKey('user.id'),primary_key=True)
     user_to_id = Column(Integer,ForeignKey('user.id'),primary_key=True)
+
 
     def to_dict(self):
         return {}
